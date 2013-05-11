@@ -13,9 +13,9 @@
 function data = readTRXDat(fileToRead)
     global pointer;                         %Store the pointer in memory between functions
     file = fopen(fileToRead,'r');           %Open the file for reading
-    dataToMem = fread(file,inf,'char*1');   %Read file as 8 bit chars
+    dataToMem = fread(file,inf,'uint8');   %Read file as 8 bit chars
     fclose(file);                           %Close the data file
-%     keyboard;
+    % keyboard;
     data = struct();                        %Init the return struct
     pointer = 1;                            %set pointer to the beginning of the file in memory
     data.header = readHeader(dataToMem);    %Read header, pointer will also be set to the beginning of the first data packet
