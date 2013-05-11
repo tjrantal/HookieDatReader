@@ -1,0 +1,20 @@
+Function for reading Hookie AM 20 accelerometer data from the .DAT -file
+produced by the accelerometer. I got the specification from Jouni
+Lunnasmaa of Traxmeet Ltd (the manufacturer of the accelerometer) and the
+specification is available through their webpage http://www.hookiemeter.com/support
+
+The function returns values as 16 bit integers and you need to apply
+the appropriate scaling if you wish to have the g values. From AM20
+with a range of +-16 g the scaling is 32/(2^13), where 32 is the full
+range in g and 2^13 is the number of discretization levels (i.e. the 
+A/D conversion is 13 bit, while the data is saved as 16 bit integers).
+
+Also, the accelerometer may (and will) go into energy saving mode, which
+causes incontinuities within the data. Use the timestmaps to figure out
+where the accelerations have been below the inactivity threshold and
+fill in appropriate values (e.g. the last recorded value) to create
+contiuous data.
+
+Written by Timo Rantalainen 2013 (tjrantal @ gmail.com)
+Licensed with the GPL 3.0 license
+(http://www.gnu.org/licenses/gpl-3.0.html)
