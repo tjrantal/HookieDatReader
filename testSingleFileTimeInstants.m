@@ -3,7 +3,8 @@ close all;
 fclose all;
 clc;
 addpath('TRXDatReader');
-fileToRead = 'DATA0002.DAT';
+% fileToRead = 'DATA0002.DAT';
+fileToRead = 'C:\MyTemp\oma\Timon\tyo\AquaRehab2012\Analysis\Accelerometry\Koe_phase I\AH170246\DATA0002.DAT';
 data = readTRXDat(fileToRead);
 %figure
 %colourCodes = {'k','r','b'};
@@ -13,10 +14,15 @@ data = readTRXDat(fileToRead);
 %end
 %subplot(4,1,4)
 %plot(data.data(1,:),'k')
-timeCodes = data.data(1,:)*24*60*60;	%Convert the timestamps to seconds
+timeCodes = data.data.values(1,:)*24*60*60;	%Convert the timestamps to seconds
+timeStamps = data.data.timeStamps;
 timeVector =[];%= zeros(1,timeCodes(length(timeCodes))-timeCodes(1)+1);	%reserve some memory for time codes
 timeVector(1) = timeCodes(1);	%Start timeVector from the initial timestamp
 incontinuities = find(diff(timeCodes) > 1.5);	%If more than 1 second has elapsed between timestamps, there has been an inactivity gap. The gap is between incontinuity(i) and incontinuity(i-1)
+
+%Just fill in between incontinuities
+%timeVector = [timeVector, (timeCodes(1):0.01:timeCodes(1)+incontinuities(1)];
+
 %Visualize the gaps
 %figure
 %plot(timeCodes,'b');
@@ -28,7 +34,7 @@ fillingGap =1;
 fillVector = 0;% zeros(1,timeCodes(length(timeCodes))-timeCodes(1)+1);	%reserve some memory for time codes
 timeVectorIndices = 1;
 i = 1;
-while i < size(data.data,2) %Go through data and create timeVector and fillVector
+while i < size(data.data.values,2) %Go through data and create timeVector and fillVector
 	if timeCodes(i) <fillTo(fillingGap)
 		for j = 1:84	
 			if i == 1
@@ -44,7 +50,7 @@ while i < size(data.data,2) %Go through data and create timeVector and fillVecto
 	else
 		%Fill the gap
 		if fillingGap <= length(fillTo)
-			while timeVector(timeVectorIndices) < fillTo(fillingGap)
+			while timeVector(timeVectorIndices-1) < fillTo(fillingGap)
 				for j = 1:84	
 					timeVector(timeVectorIndices) = timeVector(timeVectorIndices-1)+0.01;
 					fillVector(timeVectorIndices) = 1;

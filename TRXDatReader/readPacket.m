@@ -56,7 +56,9 @@
 % %             data(4,i) = getValue(packetShortValues(3*i));  %Z            
 % %         end
 % % %          keyboard
-        packet = data;
+        packet = struct();
+        packet.data = data;
+        packet.timeStamp = timeStamp;
 %         keyboard
     end
     
