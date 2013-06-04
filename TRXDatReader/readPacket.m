@@ -41,7 +41,7 @@
             tempData(i,:) = packetShortValues(chanIndices+(i-1));
             negativeValueIndices = find(bitand(hex2dec('F000'),tempData(i,:)) >0);
             data(i+1,:) = int16(bitand(hex2dec('0FFF'),tempData(i,:)));    %Interpret all values as positive
-            data(i+1,negativeValueIndices) = int16(-hex2dec('0FFF'))+int16(bitand(hex2dec('0FFF'),tempData(i,negativeValueIndices)));    %fix the interpretation of the negative values
+            data(i+1,negativeValueIndices) = int16(-hex2dec('1000'))+int16(bitand(hex2dec('0FFF'),tempData(i,negativeValueIndices)));    %fix the interpretation of the negative values
         end
 % %         tesindex = find(bitand(hex2dec('F000'),packetShortValues) >0);
 % %         testaus = [];
