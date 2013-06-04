@@ -14,8 +14,3 @@ causes incontinuities within the data. Use the timestmaps to figure out
 where the accelerations have been below the inactivity threshold and
 fill in appropriate values (e.g. the last recorded value) to create
 contiuous data.
-
-Written by Timo Rantalainen 2013 (tjrantal @ gmail.com)
-Licensed with the GPL 3.0 license
-(http://www.gnu.org/licenses/gpl-3.0.html)
-
