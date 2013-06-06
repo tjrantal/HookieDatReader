@@ -2,7 +2,8 @@
 %you'll end up with data for all of the time instants for the duration of
 %the measurement
 %if second argument is given, checks the maximum number of hours to expect
-function fullData = insertInactivity(data,maxHours)
+%Prefixes zeros, up to the first timeStamp of the current file if lastTimeStampFromPreviousFile is submitted
+function fullData = insertInactivity(data,maxHours,lastTimeStampFromPreviousFile)
     if exist('maxHours','var')
         if (data.data.timeStamps(length(data.data.timeStamps))-data.data.timeStamps(1))*24 > maxHours
             disp(['Onset ' datestr(data.data.timeStamps(1)) ' offset ' datestr(data.data.timeStamps(length(data.data.timeStamps))) ' Hours of data in File ' num2str((data.data.timeStamps(length(data.data.timeStamps))-data.data.timeStamps(1))*24) ' more than the maximum allowed ' num2str(maxHours)]);
@@ -27,6 +28,8 @@ function fullData = insertInactivity(data,maxHours)
     
     incontinuities = find(diff(timeStamps) > 1.5);	%If more than 1 second has elapsed between timestamps, there has been an inactivity gap. The gap is between incontinuity(i)+1 and incontinuity(i)
     %Fill in between incontinuities
+
+    
     %Fill in first existing bit
     continuousTimeVector = [0:(incontinuities(1)*84-1)]*samplingRate;
     timeVector(currentIndex:currentIndex+length(continuousTimeVector)-1) = continuousTimeVector;
@@ -52,7 +55,7 @@ function fullData = insertInactivity(data,maxHours)
         timeVector(currentIndex:currentIndex+length(missingTimeVector)-1) =  missingTimeVector;
         fillVector(currentIndex:currentIndex+length(missingTimeVector)-1) = ones(1,length(missingTimeVector));
         currentIndex = currentIndex+length(missingTimeVector);
-        disp(['# ' num2str(i) ' missing ' num2str(length(missingTimeVector)) ' from ' num2str(currentIndex) ' to ' num2str(currentIndex+length(missingTimeVector)-1)]);
+        %disp(['# ' num2str(i) ' missing ' num2str(length(missingTimeVector)) ' from ' num2str(currentIndex) ' to ' num2str(currentIndex+length(missingTimeVector)-1)]);
 %         keyboard
     end
     %Fill in the last existing bit
@@ -69,6 +72,24 @@ function fullData = insertInactivity(data,maxHours)
     fullData = fullData(:,1:currentIndex-1);
     fillVector = fillVector(1:currentIndex-1);
     timeVector = timeVector(1:currentIndex-1);
+    
+    
+    %Prefix with zeros from the end of the previous file, update the time
+    %accordingly
+    if exist('lastTimeStampFromPreviousFile','var')
+%         keyboard;
+        missingTime = (data.data.timeStamps(1)-lastTimeStampFromPreviousFile)*24*60*60-packetDuration;    %-packetDuration to account for the last packet in previous file
+        missingPackets = round(missingTime/packetDuration);
+        missingTimeVector = [samplingRate:(missingPackets*84)]*samplingRate;
+        timeVector = [missingTimeVector (timeVector+missingTimeVector(length(missingTimeVector))+samplingRate)]; %Prefix the vector with the new vector and adjust the existing times
+        fillVector = [ones(1,length(missingTimeVector),'int8') fillVector];
+        prefixFullData = zeros(4,length(missingTimeVector));
+        prefixFullData(1,:) = missingTimeVector;
+        fullData(1,:) = fullData(1,:)+missingTimeVector(length(missingTimeVector))+samplingRate;    %Increment time accordingly
+        fullData = [prefixFullData fullData];
+        disp(['Prefixed with ' num2str(length(missingTimeVector)) ' zeros']);
+    end
+    
 %     keyboard;  
     figure
     subplot(4,1,1)
