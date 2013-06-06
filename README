@@ -1,5 +1,5 @@
 Matlab/Octave functions for reading Hookie AM 20 accelerometer data from a .DAT -file
-produced by the accelerometer. The specification is available at http://www.hookiemeter.com/support
+produced by the accelerometer. Works only on uncompressed files. The specification is available at http://www.hookiemeter.com/support
 Written by Timo Rantalainen 2013 (tjrantal @ gmail.com)
 Licensed with the GPL 3.0 license (http://www.gnu.org/licenses/gpl-3.0.html)
 
