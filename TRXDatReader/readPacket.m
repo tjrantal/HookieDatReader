@@ -29,7 +29,7 @@
            sec = ['0' sec]; 
         end
         dateVector = [2000+str2num(year) str2num(month) str2num(day) str2num(hour) str2num(min) str2num(sec)];
-        timeStamp = datenum(dateVector);    %Get timestamp in matlab compatible format -> datestr(timeStamp returns the date
+        timeStamp = datenum(dateVector);    %Get timestamp in matlab compatible format -> datestr(timeStamp) returns the date
         %Read the acceleration values from the packet as 16 bit unsigned
         %integers
         packetShortValues = typecast(uint8(dataToMem(pointer+i:pointer+i+503)),'uint16');
