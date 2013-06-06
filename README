@@ -7,10 +7,11 @@ The function returns values as 16 bit integers and you need to apply
 the appropriate scaling if you wish to have the g values. From AM20
 with a range of +-16 g the scaling is 32/(2^13), where 32 is the full
 range in g and 2^13 is the number of discretization levels (i.e. the 
-A/D conversion is 13 bit, while the data is saved as 16 bit integers).
+A/D conversion is 13 bit, while the data is saved as 16 bit integers. For
+example: scaledData = data.data.values(2:4,:)*32/2^13;).
 
 Also, the accelerometer may (and will) go into energy saving mode, which
 causes incontinuities within the data. Use the timestmaps to figure out
 where the accelerations have been below the inactivity threshold and
 fill in appropriate values (e.g. the last recorded value) to create
-contiuous data.
+contiuous data. insertInactivity.m provides a solution.
